@@ -1,0 +1,38 @@
+name				textlab
+version				0.2-4
+architecture			x86_gcc2
+
+summary			"GUI front-end to iconv text conversion utility"
+Description			"Text File Lab lets you convert text files between various ASCII and Unicode encodings. It will also change the line endings and rip textual information from corrupted or even non-text files. And if you want to use it as a drag-n-drop text file viewer, I suppose you can.
+
+Menu position: Applications | System & Utilities
+"
+
+packager			"Michel Clasquin-Johnson <clasqm@gmail.com>"
+vendor				"clasqm"
+copyrights			"Michel Clasquin-Johnson <clasqm@gmail.com>"
+licenses				"Public Domain"
+provides {
+					textlab = 0.2-4
+					app:textlab
+					cmd:textlab
+}
+requires {
+					haiku>=r1~alpha4_pm_hrev49977-1
+					yab>=1.7.5.2
+					cmd:enca
+					cmd:file
+					cmd:hd
+					cmd:strings
+					cmd:wc
+					cmd:cut
+					cmd:iconv
+					cmd:dos2unix
+					cmd:unix2dos
+					cmd:dirname
+					cmd:mkdir
+					cmd:rm
+					cmd:date
+					cmd:cp
+}
+

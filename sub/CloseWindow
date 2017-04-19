@@ -1,0 +1,11 @@
+sub CloseWindow()
+	//Close down the main window
+	//and delete temp files
+	system("rm -f '" + InputFile$ + "'")
+	system("rm -f '" + OutputFile$ + "'")
+	system("rm -f '" + TerminatorAdjustedOutputFile$ + "'")
+	system("rm -f '" + tempdir$ + "/textlab/textlabhexfile" + "'")
+	//window close "MainWindow"
+	end
+end sub
+

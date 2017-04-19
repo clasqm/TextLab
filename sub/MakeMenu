@@ -1,0 +1,32 @@
+sub MakeMenu()
+	//Create menu in MainWindow
+	local example$
+	menu "File", "Open", "O", "MainWindow"
+	menu "File", "Force open", "F", "MainWindow"
+	submenu "File", "Save", "as Unix/Haiku file", "S", "MainWindow"
+	submenu "File", "Save", "as DOS/Windows file", "W", "MainWindow"
+	menu "File", "Clear", "C", "MainWindow"
+	menu "File", "Quit", "Q", "MainWindow"
+	menu "Help", "Help", "", "MainWindow"
+	menu "Help", "Examples", "", "MainWindow"
+	menu "Help", "About", "", "MainWindow"
+	
+	example$ = system$("if test -d /boot/home/projects/textlab/PackagingFolder/apps ; then echo develop; fi")
+	if example$ = "" example$ = system$("if test -d /boot/home/config/apps/textlab ; then echo config; fi")
+	if example$ = "" example$ = system$("if test -d /boot/system/apps/textlab ; then echo system; fi")
+	switch left$(example$,1)
+		case "c"
+			ExampleDir$ = "/boot/home/config/apps/textlab/examples"
+			break
+		case "s"
+			ExampleDir$ = "/boot/system/apps/textlab/examples"
+			break
+		case "d"
+			ExampleDir$ = "/boot/home/projects/textlab/PackagingFolder/apps/textlab/examples"
+			break
+		default
+			menu set "Help", "Examples", "disable", "MainWindow"
+			break
+	end switch
+end sub
+

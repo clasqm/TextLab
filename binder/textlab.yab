@@ -1,0 +1,704 @@
+#!/bin/env yab
+################################
+############# Prologue #############
+################################
+
+//Yabadabbadoo notification
+########DO NOT RENAME THIS FILE!########
+//Yabadabbadoo needs it to function.
+ 
+##Fill in these fields with your own particulars.
+##The variables will be used in the About Box and in naming the program.
+ 
+ProgramName$ = "textlab"
+AuthorName$ = "Michel Clasquin-Johnson"
+ProgramVersion$ = "V0.2"
+ProgramBriefDescription$ = "Text File Lab lets you convert text files between various ASCII and Unicode encodings. It will also change the line endings and rip textual information from corrupted or even non-text files.\n"
+ProgramLicense$ = "Public Domain software\n"
+ProgramAcknowledgements$ ="With thanks to all the authors of the CLI utilities I am using here."
+ 
+//*************************
+//*****Global Variables****
+//*************************
+ 
+## Technically, yab does not require you to declare global variables,
+##It just is a really, really good idea to do it anyway.
+// set DEBUG = 1 to print out all messages on the console
+DEBUG = 0
+//change this to DEBUG = 0 when you are ready to bind the program for distribution
+//try not to forget it this time ...
+CurrentFile$ = ""
+runtime = val(mid$(time$,10))
+tempdir$ = system$("finddir B_COMMON_TEMP_DIRECTORY") 
+tempdir$ = left$(tempdir$, len(tempdir$)-1) //strip off trailing newline
+system("mkdir -p " + tempdir$ + "/textlab")
+tempfilename$= system$("date +%s")
+tempfilename$ = left$(tempfilename$, len(tempfilename$)-1) //strip off trailing newline
+InputFile$ = tempdir$ + "/textlab/" + tempfilename$ +"_input.txt"
+OutputFile$ = tempdir$ + "/textlab/" + tempfilename$ +"_output.txt"
+TerminatorAdjustedOutputFile$ = tempdir$ + "/textlab/" + tempfilename$ +"_dos_unix.txt"
+InputFormat$ = "US-ASCII"
+OutputFormat$= "UTF-8"
+ExampleDir$ = ""
+InitDetectors()
+
+##########################
+######Preliminary Commands#####
+##########################
+
+## Commands to run before the Main Loop come here.
+## e.g. setting up a window with a menu.
+ 
+ 
+ 
+OpenWindow()
+
+//open file specified on the command line or passed along by the OS
+if peek("argument") <> 0 then
+	CurrentFile$ = (peek$("argument"))
+	OpenFile()
+end if
+if peek$("refsreceived") <> "" then
+	CurrentFile$ = (peek$("refsreceived"))
+	OpenFile()
+end if
+  
+ 
+#######End of Prologue#######
+
+
+//Yabadabbadoo notification
+########DO NOT RENAME THIS FILE!########
+//Yabadabbadoo needs it to function.
+
+//Main Message Loop
+dim msg$(1)
+while(not leavingLoop)
+	nCommands = token(message$, msg$(), "|")
+	for everyCommand = 1 to nCommands
+		if(DEBUG and msg$(everyCommand)<>"") print msg$(everyCommand)
+		switch(msg$(everyCommand))
+			case "_QuitRequested":
+			case "MainWindow:_QuitRequested":
+			case "MainWindow:File:Quit":
+			case "exitbutton"
+				CloseWindow()
+				break
+			case "MainWindow:File:Open":
+			case "openbutton"
+				CurrentFile$ = ""
+				OpenFile()
+				break
+			case "MainWindow:File:Force open":
+				CurrentFile$ = ""
+				ForceOpenFile()
+				break
+			case "MainWindow:File:Save:as Unix/Haiku file"
+			case "savetohaikubutton"
+				if CurrentFile$ = "" break
+				SaveFile("tohaiku")
+				break
+			case "MainWindow:File:Save:as DOS/Windows file"
+			case "savetodosbutton"
+				if CurrentFile$ = "" break
+				SaveFile("todos")
+				break
+			case "MainWindow:File:Clear":
+				ClearResults()
+				InitDetectors()
+				FillInDetectors()
+				CurrentFile$ = ""
+				break
+			case "MainWindow:Help:About":
+				Alert ProgramName$ + " " + ProgramVersion$ + "\n" + "by " + AuthorName$ +"\n\n" + ProgramBriefDescription$ + "\n" + ProgramLicense$ + "\n" + ProgramAcknowledgements$, "OK", "none"
+				break
+			case "MainWindow:Help:Help":
+				tabview set "ResultsView", 3
+				break
+			case "MainWindow:Help:Examples":
+				system("/boot/system/Tracker " + ExampleDir$ + " &")
+				break
+			case "2trackerbutton":
+				system("/boot/system/Tracker '" + RealPathName$ + "' &")
+				break
+			default:
+				break
+		end switch
+#########other commands#######
+		//check for dropped files
+		if left$(msg$(everyCommand), 20) =  "MainWindow:_Dropped:" then
+			CurrentFile$ = right$(msg$(everyCommand), len(msg$(everyCommand)) - 20)
+				OpenFile()
+
+		end if
+		//check for changed file
+		if (val(mid$(time$,10)) - runtime >2) and (ChangedDate$ <> ". . . . . .") then
+			if CurrentFile$ = "" break // after a clear
+			if system$("date -r '" + CurrentFile$ + "'") <> ChangedDate$ then
+				runtime = alert "The file was changed by another program. Reload?", "OK", "", "NO", "info"
+				if runtime = 1 then
+					OpenFile(CurrentFile$)
+					ChangedDate$ = system$("date -r '" + CurrentFile$ + "'")
+				else
+					ChangedDate$ = system$("date -r '" + CurrentFile$ + "'")
+				endif
+			runtime = val(mid$(time$,10))
+			endif
+		endif
+		//check for input format change
+		if left$(msg$(everyCommand), 13) =  "inputdropbox:" then
+			if CurrentFile$ = "" break
+			InputFormat$ = mid$(msg$(everyCommand), 14)
+			if (DEBUG) print InputFormat$
+			ChangeEncoding()
+		endif
+		//check for output format change
+		if left$(msg$(everyCommand), 14) =  "outputdropbox:" then
+			if CurrentFile$ = "" break
+			OutputFormat$ = mid$(msg$(everyCommand), 15)
+			if (DEBUG) print OutputFormat$
+		endif
+
+	next everyCommand
+wend
+
+CloseWindow()
+
+sub ChangeEncoding()
+	system("iconv -s -f " + InputFormat$ + " -t " + OutputFormat$ + " '" + InputFile$ + "' > '" + OutputFile$ + "'")
+	FillInTabs()
+end sub
+
+sub ClearResults()
+	textedit clear "TextResult"
+	textedit clear "HexResult"
+end sub
+
+sub CloseWindow()
+	//Close down the main window
+	//and delete temp files
+	system("rm -f '" + InputFile$ + "'")
+	system("rm -f '" + OutputFile$ + "'")
+	system("rm -f '" + TerminatorAdjustedOutputFile$ + "'")
+	system("rm -f '" + tempdir$ + "/textlab/textlabhexfile" + "'")
+	//window close "MainWindow"
+	end
+end sub
+
+sub CreateDetectors(FiletoLoad$)
+	
+	//GET mimetype
+	HaikuAttributeDetected$ = system$("file -ki '" + InputFile$ + "'")
+	HaikuAttributeDetected$ = right$(HaikuAttributeDetected$, len (HaikuAttributeDetected$) - len(InputFile$) - 2)
+	
+	//GET output of file command
+	fileDetected$ = system$("file -k '" + InputFile$ + "'")
+	fileDetected$ = right$(fileDetected$, len (fileDetected$) - len(InputFile$) - 2)
+	encaDetected$ = system$("enca -L none '" + InputFile$ + "'")
+	
+	//GET pathname
+	PathName$ = system$("dirname '" + FiletoLoad$ + "'")
+	PathName$ = left$(PathName$,len(PathName$)-1) //strip off trailing newline
+	// tuck away the full pathname before you start butchering it 
+	RealPathName$ = PathName$
+	//substitute ~ for /boot/home
+	if left$(PathName$, 11) = "/boot/home/" PathName$ = "~" + right$(PathName$, len(PathName$)-10)
+	//if the pathname is still too long to fit, stick "..." in the middle
+	//let's hope nobody uses pathnames exclusively of m's and w's, for we are guessing here
+	//could use a monospaced font I suppose ...
+	if len(PathName$) > 35 PathName$ = left$(PathName$, 13) + "..." + right$(PathName$, 21)
+	
+	//GET the filename
+	FileName$ =right$(FiletoLoad$, len(FiletoLoad$) - len(RealPathName$))
+	//repeat "..." procedure with filename
+	//less likely, but let's be neat
+	if len(FileName$) > 35 FileName$ = left$(FileName$, 13) + "..." + right$(FileName$, 21)
+	//should probably shove this into a subroutine
+	
+	//GET the date the file was last edited
+	ChangedDate$ = system$("date -r '" + FiletoLoad$ + "'")
+	
+	//GET number of words
+	WordsInFile$ = system$("wc -w '" + FiletoLoad$ + "' | cut -f1 -d ' '")
+	
+	//GET number of lines
+	LinesInFile$ =  system$("wc -l '" + FiletoLoad$ + "' | cut -f1 -d ' '")
+	
+	//GET number of bytes
+	BytesInFile$ = system$("wc -c '" + FiletoLoad$ + "' | cut -f1 -d ' '")
+	
+	//GET longest line
+	LongestLineInFile$ = system$("wc -L '" + FiletoLoad$ + "' | cut -f1 -d ' '")
+end sub
+
+sub DoesFileExist$()
+	local whereismyfile$
+	whereismyfile$=system$("if test -e '" + CurrentFile$ + "'; then echo yeah; else echo nope;fi")
+	return left$(whereismyfile$,1)
+end sub
+
+sub DrawLines()
+	Draw line 10, 100 to 790, 100, "MainWindow"
+	Draw line 10, 245 to 295, 245, "MainWindow"
+end sub
+
+sub ExtractStrings(FiletoLoad$)
+	local content$
+	content$ = system$("strings '" +  FiletoLoad$ +"'")
+	open OutputFile$ for writing as #1
+		print #1 content$
+	close #1
+end sub
+
+sub FillInDetectors()
+	if view get "DetectorView", "exists" view remove "DetectorView"
+	View 120, 40 to 790, 95, "DetectorView", "MainWindow"
+	draw text 0,12, HaikuAttributeDetected$, "DetectorView"
+	draw text 0,32, fileDetected$, "DetectorView"
+	draw text 0,52, encaDetected$, "DetectorView"
+	if view get "FilenameView", "exists" view remove "FilenameView"
+	View 75, 270 to 295, 375, "FilenameView", "MainWindow"
+	draw text 0,17, FileName$, "FilenameView"
+	draw text 0,40, PathName$, "FilenameView"
+	draw text 0,65, ChangedDate$, "FilenameView"
+	if view get "InfoView", "exists" view remove "InfoView"
+	View 150, 385 to 295, 485, "InfoView", "MainWindow"
+	draw text 0,15, WordsInFile$, "InfoView"
+	draw text 0,40, BytesInFile$, "InfoView"
+	draw text 0,65, LinesInFile$, "InfoView"
+	draw text 0,90, LongestLineInFile$, "InfoView"
+end sub
+
+sub FillInTabs()
+	local a$,hexfile$
+	ClearResults()
+	open OutputFile$ for reading as #1
+	while(not(eof(1)))
+		line input #1 a$
+		textedit add "TextResult", a$ + "\n"
+	wend
+	close #1
+	hexfile$ = tempdir$ + "/textlab/textlabhexfile"
+	system("hd '" +  OutputFile$ +"' > " + hexfile$)
+	open hexfile$ for reading as #1
+	while(not(eof(1)))
+		line input #1 a$
+		textedit add "HexResult", a$ + "\n"
+	wend
+	close #1
+end sub
+
+sub ForceOpenFile()
+	local isittext
+	static DirToLoadFrom$
+	if DirToLoadFrom$ = "" DirToLoadFrom$ = "/boot/home/"
+	if CurrentFile$ = "" then
+		CurrentFile$= filepanel "Load-File", "Select file to open", DirToLoadFrom$
+		if CurrentFile$ = "" then //User cancelled selection
+			return
+		end if
+	end if
+	ResetFormats()
+	//check if file exists
+	if DoesFileExist$() = "n" then
+		Alert "File Not found!\nIt may have been deleted.", "OK", "Stop"
+		return
+	end if
+	DirToLoadFrom$ = system$("dirname '" + CurrentFile$ +"'")
+	DirToLoadFrom$ = left$(DirToLoadFrom$, len(DirToLoadFrom$)-1) //strip off trailing newline
+	system("copyattr -d '" + CurrentFile$ + "' '" + InputFile$ + "'" )
+	ExtractStrings(InputFile$) 
+	CreateDetectors(CurrentFile$)
+	FillInDetectors()
+	FillInTabs()
+	tabview set "ResultsView", 1
+end sub
+
+sub InitDetectors()
+	HaikuAttributeDetected$ = "No file loaded. Please drop a file, load one from the menu or from the \"Open a File\" button below." 
+	fileDetected$ = ". . . . . ."
+	encaDetected$ = ". . . . . ."
+	FileName$  = ". . . . . ."
+	PathName$ = ". . . . . ."
+	ChangedDate$ = ". . . . . ."
+	WordsInFile$ = ". . . . . ."
+	BytesInFile$ = ". . . . . ."
+	LinesInFile$ =  ". . . . . ."
+	LongestLineInFile$ = ". . . . . ."
+	RealPathName$ = ""
+end sub
+
+sub MakeBottomInfoBox()
+	text 0, 255 to 305, 270, "moreinfotext", "MORE INFORMATION", "MainWindow" 
+	text set "moreinfotext", "align-center"
+	text 10,275 to 130, 290, "filenametext", "Filename:", "MainWindow" 
+	text set "filenametext", "align-left"
+	text 10,295 to 130, 315, "pathnametext", "Path:", "MainWindow" 
+	text set "pathnametext", "align-left"
+	//Trackerbutton comes here
+	text 10,320 to 130, 340, "changedtext", "Changed:", "MainWindow" 
+	text set "changedtext", "align-left"
+	text 10,385 to 130, 405, "wordstext", "Words:", "MainWindow" 
+	text set "wordstext", "align-left"
+	text 10,410 to 130, 430, "bytestext", "Bytes:", "MainWindow" 
+	text set "bytestext", "align-left"
+	text 10,435 to 130, 455, "linestext", "Lines/paragraphs:", "MainWindow" 
+	text set "linestext", "align-left"
+	text 10,460 to 130, 480, "longesttext", "Longest line/para:", "MainWindow" 
+	text set "longesttext", "align-left"
+end sub
+
+sub MakeButtons()
+	Button 10,535 to 150, 560, "openbutton", "Open a File", "MainWindow"
+	button 160, 535 to 400, 560, "savetodosbutton", "Save as a DOS/Windows file", "MainWindow"
+	button 410, 535 to 650, 560, "savetohaikubutton", "Save as a UNIX/Haiku file" , "MainWindow"
+	button 660, 535 to 790, 560, "exitbutton", "Exit" , "MainWindow"
+	button 10,350 to 295, 375, "2trackerbutton", "View in Tracker", "MainWindow"
+end sub
+
+sub MakeDropBoxes()
+	local encoding$
+	dropbox 10,145 to 295,170, "inputdropbox", "", "MainWindow"
+	dropbox 10,205 to 295,230, "outputdropbox", "", "MainWindow"
+	restore inputencodings
+	read encoding$
+	while(encoding$ <> "end_of_data")
+		dropbox add "inputdropbox", encoding$
+		read encoding$
+	wend
+	restore outputencodings
+	read encoding$
+	while(encoding$ <> "end_of_data")
+		dropbox add "outputdropbox", encoding$
+		read encoding$
+	wend
+	ResetFormats()
+end sub
+
+sub MakeDropBoxInfoBox()
+	text 0, 120 to 305, 135, "inputformattext", "INPUT FORMAT", "MainWindow" 
+	text set "inputformattext", "align-center"
+	text 0, 180 to 305, 195, "outputformattext", "OUTPUT FORMAT", "MainWindow" 
+	text set "outputformattext", "align-center"
+end sub
+
+sub MakeHelp()
+	local help$
+restore help
+	read help$
+	while(help$ <> "end_of_data")
+		textedit add "HelpResult", help$ + "\n"
+		read help$
+	wend
+	textedit set "HelpResult", "gotoline", 1
+end sub
+
+sub MakeMenu()
+	//Create menu in MainWindow
+	local example$
+	menu "File", "Open", "O", "MainWindow"
+	menu "File", "Force open", "F", "MainWindow"
+	submenu "File", "Save", "as Unix/Haiku file", "S", "MainWindow"
+	submenu "File", "Save", "as DOS/Windows file", "W", "MainWindow"
+	menu "File", "Clear", "C", "MainWindow"
+	menu "File", "Quit", "Q", "MainWindow"
+	menu "Help", "Help", "", "MainWindow"
+	menu "Help", "Examples", "", "MainWindow"
+	menu "Help", "About", "", "MainWindow"
+	
+	example$ = system$("if test -d /boot/home/projects/textlab/PackagingFolder/apps ; then echo develop; fi")
+	if example$ = "" example$ = system$("if test -d /boot/home/config/apps/textlab ; then echo config; fi")
+	if example$ = "" example$ = system$("if test -d /boot/system/apps/textlab ; then echo system; fi")
+	switch left$(example$,1)
+		case "c"
+			ExampleDir$ = "/boot/home/config/apps/textlab/examples"
+			break
+		case "s"
+			ExampleDir$ = "/boot/system/apps/textlab/examples"
+			break
+		case "d"
+			ExampleDir$ = "/boot/home/projects/textlab/PackagingFolder/apps/textlab/examples"
+			break
+		default
+			menu set "Help", "Examples", "disable", "MainWindow"
+			break
+	end switch
+end sub
+
+sub MakeTabBox()
+	tabview 305,110 to 790, 525, "ResultsView", "top", "MainWindow"
+	Tabview add "ResultsView", "Text View"
+	Textedit 1,1 to 480, 390, "TextResult", 3, "ResultsView1"
+	textedit set "TextResult", "wordwrap", true
+	textedit set "TextResult", "editable", false
+	Tabview add "ResultsView", "Hex View"
+	Textedit 1,1 to 480, 390, "HexResult", 1, "ResultsView2"
+	textedit set "HexResult", "wordwrap", false
+	textedit set "HexResult", "editable", false
+	textedit set "HexResult", "font", "DejaVu Sans Mono, Book, 9"
+	Tabview add "ResultsView", "Help"
+	Textedit 1,1 to 480, 390, "HelpResult", 1, "ResultsView3"
+	textedit set "HelpResult", "wordwrap", true
+	textedit set "HelpResult", "editable", false
+
+end sub
+
+sub MakeTopInfoBox()
+	text 0, 20 to 800, 35, "formatinfotext", "FILE FORMAT ACCORDING TO:", "MainWindow" 
+	text set "formatinfotext", "align-center"
+	text 10,40 to 120, 55, "detector1text", "Haiku attribute:", "MainWindow" 
+	text 10, 60 to 120,75, "detector2text", "file command:", "MainWindow" 
+	text 10, 80 to 120, 95, "detector3text", "enca command:", "MainWindow" 
+end sub
+
+sub OpenFile()
+	local isittext
+	static DirToLoadFrom$
+	if DirToLoadFrom$ = "" DirToLoadFrom$ = "/boot/home/"
+	if CurrentFile$ = "" then
+		CurrentFile$= filepanel "Load-File", "Select file to open", DirToLoadFrom$
+		if CurrentFile$ = "" then //User cancelled selection
+			return
+		end if
+	end if
+	//check if file exists
+	if DoesFileExist$() = "n" then
+		Alert "File Not found!\nIt may have been deleted.", "OK", "Stop"
+		return
+	end if
+	// check if file is a text file
+	isittext = TextFileCheck(CurrentFile$)
+	if isittext = 1 then
+		ForceOpenFile()
+		return
+	elseif isittext = 2 then
+		return
+	elseif isittext = 0 then
+		system("copyattr -d '" + CurrentFile$ + "' '" + InputFile$ + "'" )
+		system("copyattr -d '" + CurrentFile$ + "' '" + OutputFile$ + "'" )
+	endif
+	DirToLoadFrom$ = system$("dirname '" + CurrentFile$ +"'")
+	DirToLoadFrom$ = left$(DirToLoadFrom$, len(DirToLoadFrom$)-1) //strip off trailing newline
+	ResetFormats()
+	CreateDetectors(CurrentFile$)
+	FillInDetectors()
+	FillInTabs()
+	tabview set "ResultsView", 1
+end sub
+
+sub OpenWindow()
+	//Setup the main window here
+	window open 10,25 to 810,590, "MainWindow", "Text File Lab"
+	window set "MainWindow", "flags","Not-Resizable"
+	window set "MainWindow", "flags", "Not-Zoomable"
+//	window set "MainWindow", "flags", "Accept-First-Click"
+//	personally I like first click, but beta testers complained that the window did not come up when you clicked on it
+	view dropzone "MainWindow"
+	MakeMenu()
+	DrawLines()
+	MakeButtons()
+	MakeTopInfoBox()
+	MakeDropBoxInfoBox()
+	MakeDropBoxes()
+	MakeBottomInfoBox()
+	FillInDetectors()
+	MakeTabBox()
+	MakeHelp()
+end sub
+
+sub RecreateInfoPanels()
+	if view get "DetectorView", "exists" view remove "DetectorView"
+	View 120, 40 to 790, 95, "DetectorView", "MainWindow"
+	if view get "FilenameView", "exists" view remove "FilenameView"
+	View 75, 270 to 295, 375, "FilenameView", "MainWindow"
+	if view get "InfoView", "exists" view remove "InfoView"
+	View 150, 385 to 295, 485, "InfoView", "MainWindow"
+end sub
+
+sub ResetFormats()
+	dropbox select "inputdropbox", 1
+	dropbox select "outputdropbox", 2
+	InputFormat$ = "US-ASCII"
+	OutputFormat$= "UTF-8"
+end sub
+
+sub SaveFile(whichway$)
+	local FinalFilename$
+	static DirToSaveTo$
+	if DirToSaveTo$ = "" DirToSaveTo$ = "/boot/home/Desktop"
+	system("mimeset -f '" + OutputFile$ + "'")
+	if whichway$ = "tohaiku" then
+		system("dos2unix -q -f -n '" + OutputFile$ +"' '" + TerminatorAdjustedOutputFile$ +"'")
+	elseif whichway$ = "todos" then
+		system("unix2dos  -q -f -n '" + OutputFile$ +"' '" + TerminatorAdjustedOutputFile$ +"'")
+	endif
+	FinalFilename$ = filepanel "Save-File", "Save this file as ...", DirToSaveTo$
+	DirToSaveTo$ = system$("dirname '" + FinalFilename$ +"'")
+	DirToSaveTo$ = left$(DirToSaveTo$, len(DirToSaveTo$)-1) //strip off trailing newline
+	if FinalFilename$ = CurrentFile$ then
+		alert "Sorry, Text File Lab does not allow overwriting of original files. Try again with a different filename", "OK", "warning"
+		return
+	endif
+	system("cp '" + TerminatorAdjustedOutputFile$ +"' '" + FinalFilename$ + "'")
+	system("mimeset -f '" + FinalFilename$ + "'")
+end sub
+
+sub TextFileCheck(FileToOpen$)
+	//check if requested file is some kind of text file
+	local tempval
+	system("mimeset -F '" + FileToOpen$ + "'")
+	if (left$(system$("catattr -d BEOS:TYPE '" + FileToOpen$ + "'"), 5)) <> "text/" then
+		tempval = alert FileToOpen$ + "\n does not look like a text file!\nDo you want to extract strings from the file?", "Yes", "No","", "warning"
+		if tempval = 1 then 
+			return 1
+		else
+			return 2
+		end if
+	end if
+	return 0
+end sub
+
+########################################
+###DATA statements, if any, come here###
+########################################
+
+label inputencodings
+data "US-ASCII"
+data "UTF-8"
+data "UTF-16"
+data "UTF-32"
+data "CYRILLIC"
+data "ARABIC"
+data "GREEK"
+data "HEBREW"
+data "CHINESE"
+data "KOREAN"
+data "EUC-JP"
+data "LATIN1"
+data "LATIN2"
+data "LATIN3"
+data "LATIN4"
+data "LATIN5"
+data "LATIN6"
+data "LATIN7"
+data "LATIN8"
+data "LATIN-9"
+data "LATIN10"
+data "KOI8-R"
+data "KOI8-U"
+data "KOI8-RU"
+data "MS-EE"
+data "MS-CYRL"
+data "MS-ANSI"
+data "MS-GREEK"
+data "MS-TURK"
+data "MS-HEBR"
+data "MS-ARAB"
+data "WINBALTRIM"
+data "WINDOWS-1258"
+data "MACROMAN"
+data "MACCENTRALEUROPE"
+data "MACICELAND"
+data "MACCROATIAN"
+data "MACROMANIA"
+data "MACCYRILLIC"
+data "MACUKRAINE"
+data "MACGREEK"
+data "MACTURKISH"
+data "MACHEBREW"
+data "MACARABIC"
+data "MACTHAI"
+data "HP-ROMAN8"
+data "NEXTSTEP"
+data "ARMSCII-8"
+data "GEORGIAN-ACADEMY"
+data "GEORGIAN-PS"
+data "KOI8-T"
+data "CYRILLIC-ASIAN"
+data "WINDOWS-874"
+data "VISCII"
+data "MS_KANJI"
+data "HZ"
+data "BIG-5"
+data "EUC-KR"
+data "end_of_data"
+
+label outputencodings
+data "US-ASCII"
+data "UTF-8"
+data "UTF-16"
+data "UTF-32"
+data "end_of_data"
+
+label help
+data "TEXT FILE LAB"
+data "by Michel Clasquin-Johnson"
+data "================="
+data " "
+data "This program allows you to convert between various encodings of text files (and that includes HTML). It is essentially a GUI front-end to iconv."
+data " "
+data "TFL will never allow you to save your changes back to your original file. This is a safety measure. In fact, it does not even work on your file but on a copy in the TEMP directory. You can save your new, converted file with another name and once you are satisfied, you can use Tracker to delete the original and rename your new file to the old name."
+data " "
+data "TFL deals with one file at a time. There is no batch mode and I have no plans to introdue one. If you need that, you will have to use iconv in Terminal."
+data " "
+data "LOAD a file:"
+data "======="
+data " "
+data "Drop a file anywhere on the TFL window, use the OPEN button in the bottom left-hand corner, or select File | Open from the menu. If you try to load a non-text file, maybe something that got corrupted, it will offer to extract the textual information from it. You can also force this to happen manually with the \"Force open\" menu command."
+data " "
+data "Please note that extracting textual data from a large binary file may take a long time, and the TFL window will become unresponsive while it is happening. It really is a last resort. TFL should not be used as a PDF viewer, for example."
+data " "
+data "TFL will also open a file from the command line or from Tracker's \"Open with ...\" context menu."
+data " "
+data "VIEWING different encodings"
+data "=================="
+data " "
+data "At the top of the window you will see various attempts to figure out the files current encoding. Please note that these can be incorrect. Text files that have their encoding set incorrectly are one of the main reasons for this program."
+data " "
+data "Manipulating the INPUT FORMAT dropdown selector allows you to see what the file looks like if we assume different encodings. This dropdown always starts with US-ASCII encodings, it is not automatically set to the results at the top of the window (because they might be wrong). If you know that the file you want to decode comes from Japan, try setting this to EUC-JP or MS-KANJI. If it comes from Russia, try CYRILLIC, CYRILLIC-ASIAN or MACCYRILLIC. These encodings come in many names and synonyms. TFL will internally convert the file from your chosen encoding to UTF-8 and display the results."
+data "  "
+data "I have tried to use the most user-friendly synonyms. For example, ISO-IR-149 is also known as KS-C-5601. Or we can simply call it KOREAN. Iconv understands these as equivalents and it makes the dropdown a lot simpler.However, there are a few encodings without a user-friendly sysnonym. You can find them all here: https://en.wikipedia.org/wiki/Category:Character_sets"
+data " "
+data "You can view the file as normal text or in hexadecimal format, using the tabs. These tabs are non-editable, and for display only."
+data " "
+data "There is a button to view the directory in which your file resides. Note that  the file is not locked in any way, but any edits you make will not be reflected unless you reopen the file, which you can do just like you would open it in the first place. TFL will attempt every few seconds to see if the file has been changed and ask you if it should reload (this will happen when TFL regains focus), but this should not be relied upon."
+data " "
+data "SAVING the new file"
+data "============"
+data " "
+data "Select the OUTPUT FORMAT. In 99% of situations today, you can just leave this at UTF-8. Only change this if you actually know what you are doing. UTF-8 is the standard for Unicode files and the format Haiku uses internally."
+data " "
+data "The iconv utility can in fact write to any format it can read, but this has not been implemented in this version of TFL. The purpose of TFL is to read in old text files in obscure formats and convert them to something Haiku can use, not to perpetuate outdated standards. If there is an output format you really, really need, contact me <clasqm@gmail.com> and I'll activate it in the next version. You can see the full list of formats by running 'iconv -l' in Terminal."
+data " "
+data "I've left in UTF-16 and UTF-32 for future-proofing, even though AFAIK Haiku does not use these formats (yet), but you are only going to see these file formats if you actually have characters encoded in that format in your file. Haiku automagically downgrades the file to the minimum format required. Your file may end up as UTF-8 or even US-ASCII if it does not contain higher-byte characters."
+data " "
+data "You can now choose to save your file as either a DOS/Windows text file or as a UNIX/Haiku file. The difference lies in whether lines are terminated by a Carriage Return (CR) and a Line Feed (LF) characters, as in Windows, or by just a LF, as in Unix, Linux and Haiku. There was an older standard for Macs, which only used a CR, but that was before OS X and we don't use those anymore: OS X uses the UNIX standard. It's not the train smash it used to be, by the way. Most text editors, on most platforms, are capabable of handling both types of files these days and auto-convert between them. Still, saving a file meant for Haiku in the proper Haiku format is more elegant and saves a few bytes."
+data " "
+data "If you intend to use this recoded file in Haiku, select the UNIX/Haiku option from the button or the menu. A file selector will come up and you can specify a new filename. If the file you are examining, is in a read-only directory e.g. most of the /boot/system and /boot/home/config hierarchies, you will have to save it somewhere else."
+data " "
+data "PLEASE NOTE that TFL will NOT let you overwrite the original file, even if the Haiku file selector does. This is a conscious design decision on my part. If you are going to overwrite the file, you will have to do it from Tracker, Terminal or your favourite file manager. You can overwrite OTHER files on your system, as many times as you like, but not the original file that you loaded into TFL."
+data " "
+data "HELP"
+data "==="
+data " "
+data "Well, you're reading this, so that is pretty much sorted ;-)"
+data " "
+data "EXITING the program"
+data "=============="
+data " "
+data "TFL is a bit of a CPU hog, constantly shelling out to the system to see if its file has changed. I suggest you close it down when it is not in use. Alternatively you can use the \"Clear\" command from the File menu to stop the app from polling for changes."
+data " "
+data "EXAMPLES"
+data "======"
+data " "
+data "This HPKG contains two example files, borrowed from my other ports, to illustrate the use of TFL."
+data " "
+data "Butterfly-ru.html - change the input encoding to CYRILLIC-ASIAN"
+data "ElvenEdit_jaJP_Ctt.htm - change the input encoding to MS-KANJI"
+data " "
+data "Note how the document is translated. If you can read Russian or Japanese, you should be able to tell if this is the correct encoding. If not, feed the resulting UTF-8 text into Google Translate and see what it spits out. Accuracy may be improved as we get new versions of iconv."
+data " "
+data "However, these are HTML documents. To export them to UTF-8 and see them in a browser, you will have to edit them a little further in a text editor like StyledEdit or PE. Remove the META tags at the top of the document and try the result in WebPositive."
+data " "
+data "end_of_data"
+

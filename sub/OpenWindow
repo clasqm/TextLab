@@ -1,0 +1,20 @@
+sub OpenWindow()
+	//Setup the main window here
+	window open 10,25 to 810,590, "MainWindow", "Text File Lab"
+	window set "MainWindow", "flags","Not-Resizable"
+	window set "MainWindow", "flags", "Not-Zoomable"
+//	window set "MainWindow", "flags", "Accept-First-Click"
+//	personally I like first click, but beta testers complained that the window did not come up when you clicked on it
+	view dropzone "MainWindow"
+	MakeMenu()
+	DrawLines()
+	MakeButtons()
+	MakeTopInfoBox()
+	MakeDropBoxInfoBox()
+	MakeDropBoxes()
+	MakeBottomInfoBox()
+	FillInDetectors()
+	MakeTabBox()
+	MakeHelp()
+end sub
+

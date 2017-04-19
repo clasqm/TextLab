@@ -1,0 +1,427 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html;CHARSET=Shift_JIS">
+<META NAME="AUTHOR" CONTENT="ＳＨＩＮＴＡ">
+<LINK REL=STYLESHEET TYPE="text/css" HREF="SHIHelp.css" TITLE="ＳＨＩＮＴＡ　ヘルプスタイルシート">
+
+<META NAME="KEYWORDS" CONTENT="Elven Edit,">
+<TITLE>Elven Edit Ver 3.9 ヘルプ</TITLE>
+</HEAD>
+<BODY CLASS="CONTENT">
+
+<P ALIGN="right">
+<A HREF="../ElvenEdit_jaJP.htm" TARGET="_top">フレーム使用</A>　<A HREF="ElvenEdit_jaJP_Ctt.htm" TARGET="_top">フレーム不使用</A>
+</P>
+
+<A NAME="Hajimeni"></A>
+<H1>はじめに</H1>
+
+<A NAME="KonoHerupuniTuite"></A>
+<H2>このヘルプについて</H2>
+
+<P>
+　Elven Editをダウンロードしていただき、有り難うございます。<BR>
+　Elven Editは ZETA 用のソフトウェアです。R5 以前の <EM CLASS="B">B</EM><EM CLASS="E">e</EM>OS では動作しませんのでご注意下さい。また、いかなる Windows 上でも動作しません。<BR>
+　このヘルプは、W3C HTML 4.0 で記述されていますので、これに対応したブラウザでご覧下さい。配色及びレイアウトには CSS を利用しているので、CSS 対応のブラウザでご覧になると表示がきれいになります。文字コードはシフト JIS です。ヘルプの表示確認は ZETA 1.2 + Firefox 1.5 および Windows2000 + Firefox 1.5 で行っております。<BR>
+　説明しなくても分かるような事柄は記述しないことがあります。あらかじめご了承下さい。<BR>
+　キーボードについての説明がある場合、Ctrl キーと Alt キーは入れ替えた状態で説明してあります。<BR>
+</P>
+
+<A NAME="Gaiyou"></A>
+<H2>概要</H2>
+<P>
+　StyledEdit に少し便利さを加えたような感じの、シンプルなテキストエディタです。<BR>
+<BR>
+　本来 HotEdit がこの位置にいたのですが、ZETA 上では HotEdit の挙動が今一つなので、Elven Edit を開発しました。<BR>
+<BR>
+　StyledEdit に比べると以下の点が強化されています。中には HotEdit にも無い機能もあります。<BR>
+<UL>
+<LI>無制限アンドゥ・リドゥ</LI>
+<LI>文字コード自動判別（UTF-8／Shift_JIS／JIS／EUC-JP）</LI>
+<LI>日本語（全角スペース）対応オートインデント</LI>
+<LI>文字コード・改行コードの指定が簡単</LI>
+<LI>強化された検索と置換（豊富なオプション、1 回毎にウィンドウを閉じる必要なし）</LI>
+<LI>指定行へ移動</LI>
+<LI>フォントメニューが実際のフォントで表示される</LI>
+<LI>既定値以外のフォントサイズ・フォントカラー指定が可能</LI>
+<LI>背景色の指定が可能</LI>
+</UL>
+<BR>
+　なお、アドオン機能はありません。<BR>
+</P>
+<A NAME="InstalltoUninstall"></A>
+<H1>インストールとアンインストール</H1>
+<A NAME="ArchivenoNaiyou"></A>
+<H2>アーカイブの内容</H2>
+<P>
+　アーカイブには、以下のファイルが含まれています。<BR>
+<BR>
+<PRE><TT>
+ElvenEdit               …… Elven Edit 本体
+ElvenEdit_jaJP.htm      …… ヘルプファイル本体
+HelpParts/ *           ……       〃      構成ファイル
+SFWL.htm               …… ＳＨＩＮＴＡフリーソフトウェア使用許諾書
+History.txt            …… 改訂履歴
+ReadMe_enUS.txt        …… お読み下さい（英語）
+</TT></PRE>
+</P>
+<A NAME="Install"></A>
+<H2>インストール</H2>
+<P>
+<EM>メモ</EM>　旧バージョンのElven Editがインストールされている場合は、まず最初に旧バージョンをアンインストールしてから、新しいバージョンのElven Editをインストールすることをお薦めします。<BR>
+</P>
+<P>
+　適当な名前のフォルダに、アーカイブに含まれているファイルをすべて解凍します。以上でインストール完了です。<BR>
+</P>
+
+<A NAME="Uninstall"></A>
+<H2>アンインストール</H2>
+<P>
+<OL>
+<LI>Elven Edit をインストールしたフォルダを、フォルダごと削除します。</LI>
+<LI>~/config/settings/SHINTA/ にある ElvenEdit フォルダを、フォルダごと削除します。以上。</LI>
+</OL>
+</P>
+<A NAME="Kinousetsumei"></A>
+<H1>機能説明</H1>
+<P>
+　基本的な使い方は StyledEdit と同じですので、StyledEdit と違うところを中心に説明します。<BR>
+</P>
+<A NAME="FileMenu"></A>
+<H2>ファイルメニュー</H2>
+<A NAME="Hiraku"></A>
+<H3>開く</H3>
+<P>
+　ファイルパネルのメニューで文字コードを指定することができます。「自動判別（日本語）」を選べば、開くドキュメントがどの文字コードで保存されているのかを自動で判別（UTF-8／Shift_JIS／JIS／EUC-JP）して開きます。<BR>
+</P>
+<A NAME="Saiyomikomi"></A>
+<H3>再読み込み</H3>
+<P>
+　これまでの変更内容を破棄してドキュメントを開き直します。他のアプリケーションでは「最初からやり直し」「最初の状態に戻す」などのメニュー名になっていることもある機能です。<BR>
+<BR>
+　サブメニューで文字コードを指定すると、その文字コードで読み込みます。<BR>
+</P>
+<A NAME="NamaewotsuketeHozon"></A>
+<H3>名前を付けて保存</H3>
+<P>
+<IMG SRC="ElvenEdit_SavePanel.png" ALT="" HEIGHT="282" WIDTH="512" ALIGN="right" HSPACE="10" VSPACE="10">
+　ファイルパネルのメニューで文字コードおよび改行コードを指定することができます。<BR CLEAR="right">
+</P>
+<A NAME="EditMenu"></A>
+<H2>編集メニュー</H2>
+<A NAME="MotoniModosu"></A>
+<H3>元に戻す</H3>
+<P>
+　直前の操作を取り消します。<BR>
+<BR>
+　StyledEdit は 1 回分の操作しか元に戻せませんが、Elven Edit は回数に制限が無く、最初の状態までさかのぼれます。<BR>
+</P>
+<A NAME="Yarinaoshi"></A>
+<H3>やり直し</H3>
+<P>
+　元に戻した操作を再度有効にします。<BR>
+</P>
+<A NAME="Kurikaeshi"></A>
+<H3>繰り返し</H3>
+<P>
+　直前の操作と同じ操作をもう 1 度行います。<BR>
+<BR>
+　例えば、フォントカラーを赤にした後、別の文字を選択して「繰り返し」すると、新たに選択した文字の色も赤になります。<BR>
+</P>
+<A NAME="Kensaku"></A>
+<H3>検索</H3>
+<P>
+<IMG SRC="ElvenEdit_Find.png" ALT="" HEIGHT="228" WIDTH="422" ALIGN="right" HSPACE="10" VSPACE="10">
+　ドキュメントの中から指定した文字列を探します。StyledEdit とは異なり、検索ウィンドウが開いている状態でもドキュメントの編集を行うことができます。<BR>
+<BR>
+　「選択範囲内のみ」のチェックを入れると、現在選択されている部分からのみ検索します。<BR>
+<BR>
+　「大文字小文字を区別する」のチェックを入れると、アルファベットの大文字小文字が異なるものは検索しません。<BR>
+<BR>
+　「次のウィンドウも続けて検索」のチェックを入れると、Elven Edit で開いている複数のドキュメントを次々に検索します。たくさんのドキュメントから検索する場合に便利です。<BR>
+<BR>
+　「前を検索」すると、カーソル位置からドキュメントの先頭に向かって検索していきます。逆に、「次を検索」すると、カーソル位置からドキュメントの末尾に向かって検索していきます。<BR>
+<BR>
+　「全て数える」すると、指定した文字列がドキュメントの中に何個あるかを数えます。カーソル位置に関係なく、ドキュメント全体で数えます。<BR CLEAR="right">
+</P>
+<A NAME="Chikan"></A>
+<H3>置換</H3>
+<P>
+<IMG SRC="ElvenEdit_Replace.png" ALT="" HEIGHT="228" WIDTH="422" ALIGN="right" HSPACE="10" VSPACE="10">
+　指定した文字列を探し、別の文字列に置き換えます。検索ウィンドウと同じウィンドウですので、タブで検索と置換を切り替えることができます。<BR>
+<BR>
+　置換するには、「検索」欄と「置換」欄に文字列を入力した後、「前を検索」「次を検索」で指定した文字列を探します。その後、「置換して次」ボタンで探し出した文字列を置換し、次の文字列を探します。「全て置換」で一気にドキュメント全体の置換を行うことができます。<BR CLEAR="right">
+</P>
+<A NAME="ShiteigyouheIdou"></A>
+<H3>指定行へ移動</H3>
+<P>
+<IMG SRC="ElvenEdit_GoToLine.png" ALT="" HEIGHT="136" WIDTH="281" ALIGN="right" HSPACE="10" VSPACE="10">
+　指定した行へカーソルを移動します。<BR>
+<BR>
+　「行番号」欄に移動先の行番号を入力します。このとき、+10 や -30 というように、プラス／マイナス付きで行番号を入力すると、現在のカーソル位置から何行後ろ／前に行くかを指定できます。<BR CLEAR="right">
+</P>
+<A NAME="OptionMenu"></A>
+<H2>オプションメニュー</H2>
+<A NAME="Haikeishoku"></A>
+<H3>背景色</H3>
+<P>
+<IMG SRC="ElvenEdit_BGColor.png" ALT="" HEIGHT="141" WIDTH="301" ALIGN="right" HSPACE="10" VSPACE="10">
+　ドキュメントの背景色を指定します。<BR>
+<BR>
+　この機能は Elven Edit の独自機能ですので、StyledEdit や HotEdit ではサポートされていません。Elven Edit 以外のテキストエディタで開いても背景色が再現されませんのでご注意下さい。<BR CLEAR="right">
+</P>
+<A NAME="Kankyousettei"></A>
+<H1>環境設定</H1>
+<A NAME="ShinkisakuseiTab"></A>
+<H2>新規作成タブ</H2>
+<P>
+<IMG SRC="ElvenEdit_Prefs_New.png" ALT="" HEIGHT="296" WIDTH="311" ALIGN="right" HSPACE="10" VSPACE="10">
+　ドキュメント新規作成時のオプションを指定します。フォントやフォントサイズ、文字コードなどを指定できます。<BR CLEAR="right">
+</P>
+<A NAME="HirakuTab"></A>
+<H2>開くタブ</H2>
+<P>
+<IMG SRC="ElvenEdit_Prefs_Open.png" ALT="" HEIGHT="296" WIDTH="311" ALIGN="right" HSPACE="10" VSPACE="10">
+　ドキュメントを開く際のオプションを指定します。文字コードを指定できます。なお、ここでの指定よりも、開くファイルパネルでの文字コード指定が優先されます。<BR CLEAR="right">
+</P>
+<A NAME="Komattatokiwa"></A>
+<H1>困った時は</H1>
+
+<A NAME="MondaikaiketsunoTejun"></A>
+<H2>問題解決の手順</H2>
+
+<P>
+<B>1. </B>ヘルプをよく読みます。特に、<A HREF="#QandA">Q&amp;A</A> と<A HREF="#Troubleshooting">トラブルシューティング</A>の所は念入りに読みます。そして、ヘルプに書かれていることを元にして問題を解決します。<BR>
+<B>2. </B>『<A HREF="http://www2u.biglobe.ne.jp/~shinta/be/" TARGET="_blank">翔星 Be ランド</A>』内の「My BeWare」で追加情報を収集したり、Elven Editの最新版をダウンロードして使ってみたりします。<BR>
+<B>3. </B>もしそれでも解決しなかったら、最終手段として、<A HREF="#Renrakusaki">連絡先</A>にメールを出します。その際は、Elven Editのバージョンと、問題の発生状況などを詳しく分かりやすく書いて下さい。そして、ホームページ情報の更新や、Elven Editのバージョンアップを待ちます。但し、<A HREF="#Renrakusaki">連絡先</A>の所にも書いてあるとおり、回答には時間がかかることがありますので予めご了承下さい。<BR>
+</P>
+
+<A NAME="QandA"></A>
+<H2>Q &amp; A</H2>
+<P>
+　現在の所、Q&amp;A に登録されている質問はありません。<BR>
+</P>
+<A NAME="Troubleshooting"></A>
+<H2>トラブルシューティング</H2>
+<P>
+　現在の所、トラブルシューティングに登録されている事例はありません。<BR>
+</P>
+<A NAME="Sonota"></A>
+<H1>その他</H1>
+
+<A NAME="Chosakukennado"></A>
+<H2>著作権など</H2>
+<P>
+　本ソフトウェアはフリーソフトウェアです。著作権はＳＨＩＮＴＡが保持しています。<BR>
+　本ソフトウェアは、<A HREF="../SFWL.htm" TARGET="_top">ＳＨＩＮＴＡフリーソフトウェア使用許諾</A>に従って配布されています。<BR>
+</P>
+
+<A NAME="DataBase"></A>
+<H2>データベース</H2>
+<TABLE CLASS="General">
+<TR><TH CLASS="General">種 類 別</TH><TD CLASS="General">フリーソフトウェア</TD></TR>
+<TR><TH CLASS="General">名　　称</TH><TD CLASS="General">テキストエディタ</TD></TR>
+<TR><TH CLASS="General">品　　名</TH><TD CLASS="General">Elven Edit</TD></TR>
+<TR><TH CLASS="General">バージョン</TH><TD CLASS="General">Ver 3.9</TD></TR>
+<TR><TH CLASS="General">動作環境</TH><TD CLASS="General">ZETA 1.2</TD></TR>
+<TR><TH CLASS="General">適用ライセンス</TH><TD CLASS="General"><A HREF="../SFWL.htm" TARGET="_top">ＳＨＩＮＴＡフリーソフトウェア使用許諾（SFWL）</A></TD></TR>
+<TR><TH CLASS="General">作　　者</TH><TD CLASS="General">ＳＨＩＮＴＡ</TD></TR>
+<TR><TH CLASS="General">作者ホームページ</TH><TD CLASS="General">自動転送ページ<BR><A HREF="http://www.geocities.com/SiliconValley/Station/8180/Trans.htm" TARGET="_new">http://www.geocities.com/SiliconValley/Station/8180/Trans.htm</A><BR>メインページ<BR><A HREF="http://www2u.biglobe.ne.jp/~shinta/" TARGET="_new">http://www2u.biglobe.ne.jp/~shinta/</A><BR></TD></TR>
+<TR><TH CLASS="General">製品番号</TH><TD CLASS="General">SHZT-038-F</TD></TR>
+</TABLE>
+<A NAME="DousaKakuninKankyo"></A>
+<H2>動作確認環境</H2>
+
+<P>
+　Elven Editの動作確認は、以下の環境で行っております。<BR>
+</P>
+
+<TABLE CLASS="General">
+<TR><TH CLASS="General">パソコン種別</TH><TD CLASS="General">自作</TD></TR>
+<TR><TH CLASS="General">マザーボード</TH><TD CLASS="General">ASUS N4L-VM DH</TD></TR>
+<TR><TH CLASS="General">CPU</TH><TD CLASS="General">Intel Core Duo T2500</TD></TR>
+<TR><TH CLASS="General">グラフィック</TH><TD CLASS="General">GIGABYTE GV-RX55256D (Radeon X550)</TD></TR>
+<TR><TH CLASS="General">メ モ リ</TH><TD CLASS="General">2GB (DDR2-667 DIMM 1GB×2)</TD></TR>
+<TR><TH CLASS="General">ハードディスク</TH><TD CLASS="General">410GB</TD></TR>
+<TR><TH CLASS="General">OS</TH><TD CLASS="General">ZETA 1.2 for x86</TD></TR>
+</TABLE>
+
+<A NAME="KaiteiRireki"></A>
+<H2>改訂履歴</H2>
+<P>
+　<A HREF="../History.txt" TARGET="_top">History.txt</A> (UTF-8) をご覧下さい。<BR>
+</P>
+<A NAME="Renrakusaki"></A>
+<H2>連絡先</H2>
+
+<P>
+　ご意見、ご感想（このソフトウェアの良い点や悪い点等）、ご要望、ご質問、アドバイス、バグレポート等がございましたら、メールを下さい。その際は、このソフトウェア及び OS の名前とバージョンを書いて下さるようお願いします。また、サポートできるのは最新版のみです（旧バージョンは最新版のコンパイル時に消えて無くなってしまうので）。但し旧バージョンでも、ＳＨＩＮＴＡの記憶に残っている部分や最新版と仕様が同じ部分についてはこの限りではありません。<BR>
+　メールアドレスは <A HREF="mailto:shinta.0806[AT]gmail.com"><IMG SRC="MailAddr.png" ALT="" HEIGHT="18" WIDTH="185" BORDER="0" HSPACE="0" VSPACE="0"></A> です。いただいたご意見等は、なるべく今後の参考にしていきます。質問をいただいた場合には、次のいずれかの対応をしたいと考えています。<BR>
+<BR>
+　・<A HREF="http://www2u.biglobe.ne.jp/~shinta/be/" TARGET="_blank">翔星 Be ランド</A>内に回答を公開<BR>
+　・バージョンアップの時にヘルプ上で回答<BR>
+　・直接メールで回答<BR>
+<BR>
+　メールがたくさん届いてしまった時などは、回答までに時間がかかるかもしれませんがご了承下さい。<BR>
+　なお、メールを送る時は以下のことをお願いします。<BR>
+<BR>
+・text/plain 形式でお願いします。HTML 形式等では読めません。<BR>
+・いきなりバイナリを送るのはご遠慮下さい。前もってＳＨＩＮＴＡに打診して下さるようお願いします。<BR>
+・返信アドレスは正確にお願いします。返信できない時は困ってしまいます。<BR>
+</P>
+
+<A NAME="Sapotopeji"></A>
+<H2>サポートページ</H2>
+
+<P>
+　このソフトウェアに関する情報や、このソフトウェアの最新版はＳＨＩＮＴＡのホームページ『<A HREF="http://www2u.biglobe.ne.jp/~shinta/be/" TARGET="_blank">翔星 Be ランド</A>』にあります。さまざまな情報を掲載していますので、是非ご利用下さい。<BR>
+</P>
+
+<A NAME="Sakuhinsyoukai"></A>
+<H1>作品紹介</H1>
+
+<P>
+　いずれもＳＨＩＮＴＡの <EM CLASS="B">B</EM><EM CLASS="E">e</EM>OS / Zeta ホームページ『<A HREF="http://www2u.biglobe.ne.jp/~shinta/be/" TARGET="_blank">翔星 Be ランド</A>』で入手できます。<BR>
+</P>
+
+<A NAME="AnthyForZETA"></A>
+<H3>Anthy for ZETA</H3>
+<P>
+　ひらがな・漢字や記号などの日本語を入力するためのソフトウェア（日本語インプットメソッド）です。<BR>
+　ローマ字入力・かな入力両対応、バリエーション豊富な後変換、句読点変換機能など、多くの便利機能を搭載しております。BeOS/ZETA 系 OS で使える最強の日本語インプットメソッドを目指して開発されています。<BR>
+</P>
+
+<A NAME="Be88BASIC"></A>
+<H3>Be88-BASIC</H3>
+<P>
+　BASIC インタープリタです。<BR>
+　NEC の PC-9800 シリーズ用 BASIC インタープリタ「 N88-日本語 BASIC(86)（ Disk 版）Ver 6.0 」および「 N88-日本語 BASIC(86)（ DOS 版）Ver 6.1 」と互換性があり、既存の N88-BASIC 用プログラムを無修正のまま動作させられるようにしています。<BR>
+</P>
+
+<A NAME="BenaLife"></A>
+<H3>Be な Life</H3>
+<P>
+　一昔前に大流行したというライフゲームを <EM CLASS="B">B</EM><EM CLASS="E">e</EM>OS 用にしたものです。<BR>
+　フィールド上の各生命体は、隣接する生命体との相互関係によって、次の世代まで生き残るか、死ぬか、はたまた新しく生まれるかが決まります。はじめにいくつか生命体を配置し、時の移り変わりによって生命体の存在位置がどのように移り変わっていくかを見て楽しむシミュレーションゲームです。<BR>
+</P>
+
+<A NAME="CLAmpArchivePlugin"></A>
+<H3>CL-Amp Archive Plugin</H3>
+
+<P>
+　書庫内（ LHA、ZIP 等）のメディアファイルファイル（ WAV、MP3 等）を再生するための CL-Amp プラグインです。<BR>
+　書庫の解凍には Archive Translator、メディアファイルの再生には CL-Amp 入力プラグインを利用するため、対応する Archive Translator や CL-Amp 入力プラグインを用意すれば、どのような形式の書庫・メディアファイルも取り扱うことができます。<BR>
+</P>
+
+<A NAME="CLLyricsDisplayer"></A>
+<H3>CL-Lyrics Displayer</H3>
+<P>
+　CL-Amp で再生されている曲に合わせて歌詞を表示する、CL-Amp 用プラグインです。<BR>
+　タイムタグ付き歌詞ファイルと呼ばれるテキストファイルを準備することで、曲データの形式（ WAV、MP3 など）に関わり無く任意の曲の歌詞をタイミング良く表示することができます。<BR>
+</P>
+
+<A NAME="CLLyricsEditor"></A>
+<H3>CL-Lyrics Editor</H3>
+
+<P>
+　タイムタグ付き歌詞ファイルを簡単に作成することができる、CL-Amp 用プラグインです。<BR>
+　作成した歌詞ファイルは姉妹ソフトウェア「 CL-Lyrics Displayer 」で表示できる他、一般の歌詞表示ソフトウェアや歌詞表示機能付きマルチメディアプレーヤなどでも表示できます。<BR>
+</P>
+
+<A NAME="DESLECT"></A>
+<H3>DESLECT</H3>
+<P>
+　最大４人まで同時プレイ可能な、対戦型早押しクイズゲームです。<BR>
+　<EM CLASS="B">B</EM><EM CLASS="E">e</EM>OS には大勢でわいわい遊べるゲームが少ないと思ったので作ってみました。和やかなひとときを過ごすための一助になれば幸いです。１つしか残っていないケーキを誰が食べるか決めるのにも使えますね(^^)。<BR>
+　コンピュータも参戦できるので、少人数の場合でも遊べます。<BR>
+</P>
+
+<A NAME="ElvenEdit"></A>
+<H3>Elven Edit</H3>
+<P>
+　StyledEdit に少し便利さを加えたような感じの、シンプルなテキストエディタです。<BR>
+<BR>
+　無制限アンドゥ・リドゥ、強化された検索・置換、背景色の指定などが可能です。<BR>
+</P>
+
+<A NAME="LightMIDI"></A>
+<H3>Light MIDI</H3>
+<P>
+　外部 MIDI 音源に出力できる MIDI プレーヤーです。<EM CLASS="B">B</EM><EM CLASS="E">e</EM>OS 内蔵ソフトシンセサイザーにも出力できます。<BR>
+　ネスト可能な強力なプレイリスト機能を持っており、いつでも簡単に好きな曲を再生できます。<BR>
+　リピート再生、ランダム再生もできます。<BR>
+</P>
+
+<A NAME="MarbleMDXConverter"></A>
+<H3>Marble MDX Converter</H3>
+
+<P>
+　MDX 形式のサウンドファイルを WAVE 形式や MIDI 形式に変換します。<BR>
+　WAVE は鑑賞用として、MIDI は着メロ作成などの新たな用途に、使えると思います。<BR>
+</P>
+
+<A NAME="MonkeysAudioSuite"></A>
+<H3>Monkey's Audio Suite for BeOS</H3>
+
+<P>
+　Monkey's Audio Suite for <EM CLASS="B">B</EM><EM CLASS="E">e</EM>OS は、Monkey's Audio 形式で圧縮されたファイル（ APE ファイル）を扱うためのソフトウェア集です。<BR>
+　Monkey's Audio は Matthew T. Ashland 氏が開発した音声用の圧縮形式です。MP3 などとは異なり可逆圧縮なので、圧縮しても音質が劣化しません。<BR>
+</P>
+
+<A NAME="TextBank"></A>
+<H3>Text Bank</H3>
+<P>
+　よく使う文字列をワンタッチで貼り付けるためのユーティリティーです。クリップボード履歴、現在日時、定型文などを簡単に貼り付けることができます。<BR>
+　クリップボード履歴は自動的に記録されていきます。文字列そのものだけではなく、色やフォントサイズなどの属性も記録されますので便利です。<BR>
+</P>
+
+<A NAME="GrandEnjoyPianistSD"></A>
+<H3>グランド Enjoy! ピアニスト SD</H3>
+<P>
+スタンダード MIDI ファイル（SMF）をセガトイズ「グランドピアニスト」専用形式（.fem）に変換します。<BR>
+<BR>
+　単に SMF の拡張子（.mid）を .fem に変更するだけでも、とりあえずグランドピアニストで再生することはできます。しかし、グランド Enjoy! ピアニスト SD で変換すれば、より演奏表情が豊かになり、また、重いデータでも演奏のもたつきが抑えられます。<BR>
+</P>
+
+<A NAME="ChochoitoiCat"></A>
+<H3>ちょちょいと iCat</H3>
+<P>
+　指定したフォルダ（複数指定可）の中にある画像ファイル（png,gif,jpeg）を一覧表示できる HTML ファイルを生成します。<BR>
+　インターネットからダウンロードしたたくさんの画像ファイルをまとめて見たり、自分のホームページにアップロードする画像を管理したりするのに便利です。<BR>
+　GUI アプリケーションですが、HTML 生成エンジンはシェルスクリプトなのでコマンドラインでも使えます。<BR>
+</P>
+
+<A NAME="ChochoitoArchiver"></A>
+<H3>ちょちょいとアーカイバ</H3>
+<P>
+　手軽にファイルを圧縮・解凍するユーティリティーです。<BR>
+　トランスアーカイバと呼ばれるアドオンをインストールすることにより、任意の形式の書庫を扱えます。<BR>
+</P>
+
+<A NAME="ChochoitoEnseffector"></A>
+<H3>ちょちょいとアンセフェクター</H3>
+<P>
+　再生中の MIDI の曲の音色をリアルタイムに変更するアプリケーションです。アプリケーション間 MIDI 通信を利用して音色を変更します。<BR>
+　チャンネル毎に個別に音色を変更できるほか、複数のチャンネルの音色を一度に変更することができます。<BR>
+</P>
+
+<A NAME="MafooGa"></A>
+<H3>魔封画</H3>
+<P>
+　各種画像を集めてリソースファイルを作成します。画像をビットマップに展開せずにそのまま格納するので、リソースファイルのサイズが大きくなりません。<BR>
+</P>
+
+<A NAME="Rengaran"></A>
+<H3>連画覧</H3>
+
+<P>
+　高速な画像連続ビューアです。<BR>
+　フォルダ内の複数の画像を、次々と閲覧する用途を主眼に置いています。<BR>
+　シンプルな操作で快適に画像の閲覧が出来、また、コメント機能などの便利な付加機能も併せ持っています。<BR>
+</P>
+
+</BODY>
+</HTML><!-- End of HTML -->
+

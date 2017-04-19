@@ -1,0 +1,7 @@
+sub ResetFormats()
+	dropbox select "inputdropbox", 1
+	dropbox select "outputdropbox", 2
+	InputFormat$ = "US-ASCII"
+	OutputFormat$= "UTF-8"
+end sub
+

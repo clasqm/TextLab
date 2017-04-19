@@ -1,0 +1,35 @@
+sub OpenFile()
+	local isittext
+	static DirToLoadFrom$
+	if DirToLoadFrom$ = "" DirToLoadFrom$ = "/boot/home/"
+	if CurrentFile$ = "" then
+		CurrentFile$= filepanel "Load-File", "Select file to open", DirToLoadFrom$
+		if CurrentFile$ = "" then //User cancelled selection
+			return
+		end if
+	end if
+	//check if file exists
+	if DoesFileExist$() = "n" then
+		Alert "File Not found!\nIt may have been deleted.", "OK", "Stop"
+		return
+	end if
+	// check if file is a text file
+	isittext = TextFileCheck(CurrentFile$)
+	if isittext = 1 then
+		ForceOpenFile()
+		return
+	elseif isittext = 2 then
+		return
+	elseif isittext = 0 then
+		system("copyattr -d '" + CurrentFile$ + "' '" + InputFile$ + "'" )
+		system("copyattr -d '" + CurrentFile$ + "' '" + OutputFile$ + "'" )
+	endif
+	DirToLoadFrom$ = system$("dirname '" + CurrentFile$ +"'")
+	DirToLoadFrom$ = left$(DirToLoadFrom$, len(DirToLoadFrom$)-1) //strip off trailing newline
+	ResetFormats()
+	CreateDetectors(CurrentFile$)
+	FillInDetectors()
+	FillInTabs()
+	tabview set "ResultsView", 1
+end sub
+

@@ -1,0 +1,14 @@
+sub InitDetectors()
+	HaikuAttributeDetected$ = "No file loaded. Please drop a file, load one from the menu or from the \"Open a File\" button below." 
+	fileDetected$ = ". . . . . ."
+	encaDetected$ = ". . . . . ."
+	FileName$  = ". . . . . ."
+	PathName$ = ". . . . . ."
+	ChangedDate$ = ". . . . . ."
+	WordsInFile$ = ". . . . . ."
+	BytesInFile$ = ". . . . . ."
+	LinesInFile$ =  ". . . . . ."
+	LongestLineInFile$ = ". . . . . ."
+	RealPathName$ = ""
+end sub
+

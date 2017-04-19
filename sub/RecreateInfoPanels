@@ -1,0 +1,9 @@
+sub RecreateInfoPanels()
+	if view get "DetectorView", "exists" view remove "DetectorView"
+	View 120, 40 to 790, 95, "DetectorView", "MainWindow"
+	if view get "FilenameView", "exists" view remove "FilenameView"
+	View 75, 270 to 295, 375, "FilenameView", "MainWindow"
+	if view get "InfoView", "exists" view remove "InfoView"
+	View 150, 385 to 295, 485, "InfoView", "MainWindow"
+end sub
+

@@ -1,0 +1,11 @@
+sub MakeHelp()
+	local help$
+restore help
+	read help$
+	while(help$ <> "end_of_data")
+		textedit add "HelpResult", help$ + "\n"
+		read help$
+	wend
+	textedit set "HelpResult", "gotoline", 1
+end sub
+

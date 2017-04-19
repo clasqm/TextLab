@@ -1,0 +1,98 @@
+
+//Yabadabbadoo notification
+########DO NOT RENAME THIS FILE!########
+//Yabadabbadoo needs it to function.
+
+//Main Message Loop
+dim msg$(1)
+while(not leavingLoop)
+	nCommands = token(message$, msg$(), "|")
+	for everyCommand = 1 to nCommands
+		if(DEBUG and msg$(everyCommand)<>"") print msg$(everyCommand)
+		switch(msg$(everyCommand))
+			case "_QuitRequested":
+			case "MainWindow:_QuitRequested":
+			case "MainWindow:File:Quit":
+			case "exitbutton"
+				CloseWindow()
+				break
+			case "MainWindow:File:Open":
+			case "openbutton"
+				CurrentFile$ = ""
+				OpenFile()
+				break
+			case "MainWindow:File:Force open":
+				CurrentFile$ = ""
+				ForceOpenFile()
+				break
+			case "MainWindow:File:Save:as Unix/Haiku file"
+			case "savetohaikubutton"
+				if CurrentFile$ = "" break
+				SaveFile("tohaiku")
+				break
+			case "MainWindow:File:Save:as DOS/Windows file"
+			case "savetodosbutton"
+				if CurrentFile$ = "" break
+				SaveFile("todos")
+				break
+			case "MainWindow:File:Clear":
+				ClearResults()
+				InitDetectors()
+				FillInDetectors()
+				CurrentFile$ = ""
+				break
+			case "MainWindow:Help:About":
+				Alert ProgramName$ + " " + ProgramVersion$ + "\n" + "by " + AuthorName$ +"\n\n" + ProgramBriefDescription$ + "\n" + ProgramLicense$ + "\n" + ProgramAcknowledgements$, "OK", "none"
+				break
+			case "MainWindow:Help:Help":
+				tabview set "ResultsView", 3
+				break
+			case "MainWindow:Help:Examples":
+				system("/boot/system/Tracker " + ExampleDir$ + " &")
+				break
+			case "2trackerbutton":
+				system("/boot/system/Tracker '" + RealPathName$ + "' &")
+				break
+			default:
+				break
+		end switch
+#########other commands#######
+		//check for dropped files
+		if left$(msg$(everyCommand), 20) =  "MainWindow:_Dropped:" then
+			CurrentFile$ = right$(msg$(everyCommand), len(msg$(everyCommand)) - 20)
+				OpenFile()
+
+		end if
+		//check for changed file
+		if (val(mid$(time$,10)) - runtime >2) and (ChangedDate$ <> ". . . . . .") then
+			if CurrentFile$ = "" break // after a clear
+			if system$("date -r '" + CurrentFile$ + "'") <> ChangedDate$ then
+				runtime = alert "The file was changed by another program. Reload?", "OK", "", "NO", "info"
+				if runtime = 1 then
+					OpenFile(CurrentFile$)
+					ChangedDate$ = system$("date -r '" + CurrentFile$ + "'")
+				else
+					ChangedDate$ = system$("date -r '" + CurrentFile$ + "'")
+				endif
+			runtime = val(mid$(time$,10))
+			endif
+		endif
+		//check for input format change
+		if left$(msg$(everyCommand), 13) =  "inputdropbox:" then
+			if CurrentFile$ = "" break
+			InputFormat$ = mid$(msg$(everyCommand), 14)
+			if (DEBUG) print InputFormat$
+			ChangeEncoding()
+		endif
+		//check for output format change
+		if left$(msg$(everyCommand), 14) =  "outputdropbox:" then
+			if CurrentFile$ = "" break
+			OutputFormat$ = mid$(msg$(everyCommand), 15)
+			if (DEBUG) print OutputFormat$
+		endif
+
+	next everyCommand
+wend
+
+CloseWindow()
+

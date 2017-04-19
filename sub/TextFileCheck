@@ -1,0 +1,15 @@
+sub TextFileCheck(FileToOpen$)
+	//check if requested file is some kind of text file
+	local tempval
+	system("mimeset -F '" + FileToOpen$ + "'")
+	if (left$(system$("catattr -d BEOS:TYPE '" + FileToOpen$ + "'"), 5)) <> "text/" then
+		tempval = alert FileToOpen$ + "\n does not look like a text file!\nDo you want to extract strings from the file?", "Yes", "No","", "warning"
+		if tempval = 1 then 
+			return 1
+		else
+			return 2
+		end if
+	end if
+	return 0
+end sub
+

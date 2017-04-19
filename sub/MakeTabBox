@@ -1,0 +1,18 @@
+sub MakeTabBox()
+	tabview 305,110 to 790, 525, "ResultsView", "top", "MainWindow"
+	Tabview add "ResultsView", "Text View"
+	Textedit 1,1 to 480, 390, "TextResult", 3, "ResultsView1"
+	textedit set "TextResult", "wordwrap", true
+	textedit set "TextResult", "editable", false
+	Tabview add "ResultsView", "Hex View"
+	Textedit 1,1 to 480, 390, "HexResult", 1, "ResultsView2"
+	textedit set "HexResult", "wordwrap", false
+	textedit set "HexResult", "editable", false
+	textedit set "HexResult", "font", "DejaVu Sans Mono, Book, 9"
+	Tabview add "ResultsView", "Help"
+	Textedit 1,1 to 480, 390, "HelpResult", 1, "ResultsView3"
+	textedit set "HelpResult", "wordwrap", true
+	textedit set "HelpResult", "editable", false
+
+end sub
+

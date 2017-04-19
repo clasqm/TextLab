@@ -1,0 +1,7 @@
+sub MakeDropBoxInfoBox()
+	text 0, 120 to 305, 135, "inputformattext", "INPUT FORMAT", "MainWindow" 
+	text set "inputformattext", "align-center"
+	text 0, 180 to 305, 195, "outputformattext", "OUTPUT FORMAT", "MainWindow" 
+	text set "outputformattext", "align-center"
+end sub
+

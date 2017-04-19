@@ -1,0 +1,19 @@
+sub FillInDetectors()
+	if view get "DetectorView", "exists" view remove "DetectorView"
+	View 120, 40 to 790, 95, "DetectorView", "MainWindow"
+	draw text 0,12, HaikuAttributeDetected$, "DetectorView"
+	draw text 0,32, fileDetected$, "DetectorView"
+	draw text 0,52, encaDetected$, "DetectorView"
+	if view get "FilenameView", "exists" view remove "FilenameView"
+	View 75, 270 to 295, 375, "FilenameView", "MainWindow"
+	draw text 0,17, FileName$, "FilenameView"
+	draw text 0,40, PathName$, "FilenameView"
+	draw text 0,65, ChangedDate$, "FilenameView"
+	if view get "InfoView", "exists" view remove "InfoView"
+	View 150, 385 to 295, 485, "InfoView", "MainWindow"
+	draw text 0,15, WordsInFile$, "InfoView"
+	draw text 0,40, BytesInFile$, "InfoView"
+	draw text 0,65, LinesInFile$, "InfoView"
+	draw text 0,90, LongestLineInFile$, "InfoView"
+end sub
+

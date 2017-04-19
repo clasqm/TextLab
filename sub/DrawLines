@@ -1,0 +1,5 @@
+sub DrawLines()
+	Draw line 10, 100 to 790, 100, "MainWindow"
+	Draw line 10, 245 to 295, 245, "MainWindow"
+end sub
+

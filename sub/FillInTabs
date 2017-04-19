@@ -1,0 +1,19 @@
+sub FillInTabs()
+	local a$,hexfile$
+	ClearResults()
+	open OutputFile$ for reading as #1
+	while(not(eof(1)))
+		line input #1 a$
+		textedit add "TextResult", a$ + "\n"
+	wend
+	close #1
+	hexfile$ = tempdir$ + "/textlab/textlabhexfile"
+	system("hd '" +  OutputFile$ +"' > " + hexfile$)
+	open hexfile$ for reading as #1
+	while(not(eof(1)))
+		line input #1 a$
+		textedit add "HexResult", a$ + "\n"
+	wend
+	close #1
+end sub
+

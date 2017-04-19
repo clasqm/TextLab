@@ -1,0 +1,8 @@
+sub ExtractStrings(FiletoLoad$)
+	local content$
+	content$ = system$("strings '" +  FiletoLoad$ +"'")
+	open OutputFile$ for writing as #1
+		print #1 content$
+	close #1
+end sub
+

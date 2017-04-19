@@ -1,0 +1,46 @@
+sub CreateDetectors(FiletoLoad$)
+	
+	//GET mimetype
+	HaikuAttributeDetected$ = system$("file -ki '" + InputFile$ + "'")
+	HaikuAttributeDetected$ = right$(HaikuAttributeDetected$, len (HaikuAttributeDetected$) - len(InputFile$) - 2)
+	
+	//GET output of file command
+	fileDetected$ = system$("file -k '" + InputFile$ + "'")
+	fileDetected$ = right$(fileDetected$, len (fileDetected$) - len(InputFile$) - 2)
+	encaDetected$ = system$("enca -L none '" + InputFile$ + "'")
+	
+	//GET pathname
+	PathName$ = system$("dirname '" + FiletoLoad$ + "'")
+	PathName$ = left$(PathName$,len(PathName$)-1) //strip off trailing newline
+	// tuck away the full pathname before you start butchering it 
+	RealPathName$ = PathName$
+	//substitute ~ for /boot/home
+	if left$(PathName$, 11) = "/boot/home/" PathName$ = "~" + right$(PathName$, len(PathName$)-10)
+	//if the pathname is still too long to fit, stick "..." in the middle
+	//let's hope nobody uses pathnames exclusively of m's and w's, for we are guessing here
+	//could use a monospaced font I suppose ...
+	if len(PathName$) > 35 PathName$ = left$(PathName$, 13) + "..." + right$(PathName$, 21)
+	
+	//GET the filename
+	FileName$ =right$(FiletoLoad$, len(FiletoLoad$) - len(RealPathName$))
+	//repeat "..." procedure with filename
+	//less likely, but let's be neat
+	if len(FileName$) > 35 FileName$ = left$(FileName$, 13) + "..." + right$(FileName$, 21)
+	//should probably shove this into a subroutine
+	
+	//GET the date the file was last edited
+	ChangedDate$ = system$("date -r '" + FiletoLoad$ + "'")
+	
+	//GET number of words
+	WordsInFile$ = system$("wc -w '" + FiletoLoad$ + "' | cut -f1 -d ' '")
+	
+	//GET number of lines
+	LinesInFile$ =  system$("wc -l '" + FiletoLoad$ + "' | cut -f1 -d ' '")
+	
+	//GET number of bytes
+	BytesInFile$ = system$("wc -c '" + FiletoLoad$ + "' | cut -f1 -d ' '")
+	
+	//GET longest line
+	LongestLineInFile$ = system$("wc -L '" + FiletoLoad$ + "' | cut -f1 -d ' '")
+end sub
+

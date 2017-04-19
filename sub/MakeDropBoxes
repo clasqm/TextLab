@@ -1,0 +1,19 @@
+sub MakeDropBoxes()
+	local encoding$
+	dropbox 10,145 to 295,170, "inputdropbox", "", "MainWindow"
+	dropbox 10,205 to 295,230, "outputdropbox", "", "MainWindow"
+	restore inputencodings
+	read encoding$
+	while(encoding$ <> "end_of_data")
+		dropbox add "inputdropbox", encoding$
+		read encoding$
+	wend
+	restore outputencodings
+	read encoding$
+	while(encoding$ <> "end_of_data")
+		dropbox add "outputdropbox", encoding$
+		read encoding$
+	wend
+	ResetFormats()
+end sub
+

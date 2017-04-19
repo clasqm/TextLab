@@ -1,0 +1,5 @@
+sub ChangeEncoding()
+	system("iconv -s -f " + InputFormat$ + " -t " + OutputFormat$ + " '" + InputFile$ + "' > '" + OutputFile$ + "'")
+	FillInTabs()
+end sub
+

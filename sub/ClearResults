@@ -1,0 +1,5 @@
+sub ClearResults()
+	textedit clear "TextResult"
+	textedit clear "HexResult"
+end sub
+

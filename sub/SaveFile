@@ -1,0 +1,21 @@
+sub SaveFile(whichway$)
+	local FinalFilename$
+	static DirToSaveTo$
+	if DirToSaveTo$ = "" DirToSaveTo$ = "/boot/home/Desktop"
+	system("mimeset -f '" + OutputFile$ + "'")
+	if whichway$ = "tohaiku" then
+		system("dos2unix -q -f -n '" + OutputFile$ +"' '" + TerminatorAdjustedOutputFile$ +"'")
+	elseif whichway$ = "todos" then
+		system("unix2dos  -q -f -n '" + OutputFile$ +"' '" + TerminatorAdjustedOutputFile$ +"'")
+	endif
+	FinalFilename$ = filepanel "Save-File", "Save this file as ...", DirToSaveTo$
+	DirToSaveTo$ = system$("dirname '" + FinalFilename$ +"'")
+	DirToSaveTo$ = left$(DirToSaveTo$, len(DirToSaveTo$)-1) //strip off trailing newline
+	if FinalFilename$ = CurrentFile$ then
+		alert "Sorry, Text File Lab does not allow overwriting of original files. Try again with a different filename", "OK", "warning"
+		return
+	endif
+	system("cp '" + TerminatorAdjustedOutputFile$ +"' '" + FinalFilename$ + "'")
+	system("mimeset -f '" + FinalFilename$ + "'")
+end sub
+

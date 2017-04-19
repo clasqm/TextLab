@@ -1,0 +1,8 @@
+sub MakeTopInfoBox()
+	text 0, 20 to 800, 35, "formatinfotext", "FILE FORMAT ACCORDING TO:", "MainWindow" 
+	text set "formatinfotext", "align-center"
+	text 10,40 to 120, 55, "detector1text", "Haiku attribute:", "MainWindow" 
+	text 10, 60 to 120,75, "detector2text", "file command:", "MainWindow" 
+	text 10, 80 to 120, 95, "detector3text", "enca command:", "MainWindow" 
+end sub
+

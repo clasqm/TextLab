@@ -1,0 +1,6 @@
+sub DoesFileExist$()
+	local whereismyfile$
+	whereismyfile$=system$("if test -e '" + CurrentFile$ + "'; then echo yeah; else echo nope;fi")
+	return left$(whereismyfile$,1)
+end sub
+

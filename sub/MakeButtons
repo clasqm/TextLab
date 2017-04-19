@@ -1,0 +1,8 @@
+sub MakeButtons()
+	Button 10,535 to 150, 560, "openbutton", "Open a File", "MainWindow"
+	button 160, 535 to 400, 560, "savetodosbutton", "Save as a DOS/Windows file", "MainWindow"
+	button 410, 535 to 650, 560, "savetohaikubutton", "Save as a UNIX/Haiku file" , "MainWindow"
+	button 660, 535 to 790, 560, "exitbutton", "Exit" , "MainWindow"
+	button 10,350 to 295, 375, "2trackerbutton", "View in Tracker", "MainWindow"
+end sub
+

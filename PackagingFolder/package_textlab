@@ -1,0 +1,11 @@
+#!/bin/sh
+cd /boot/home/projects/textlab/PackagingFolder
+package create -b textlab_0.2-4_gcc2.hpkg
+sleep 0.5
+package add textlab_0.2-4_gcc2.hpkg data documentation apps bin
+sleep 0.5
+addattr BeShare:Info "GUI front-end to various text conversion utilities" textlab_0.2-4_gcc2.hpkg
+becopy textlab_0.2-4_gcc2.hpkg "/Storage/Haiku/My ports"
+mv textlab_0.2-4_gcc2.hpkg /boot/home/projects/repo
+
+sync

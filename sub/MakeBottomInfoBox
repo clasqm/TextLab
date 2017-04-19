@@ -1,0 +1,20 @@
+sub MakeBottomInfoBox()
+	text 0, 255 to 305, 270, "moreinfotext", "MORE INFORMATION", "MainWindow" 
+	text set "moreinfotext", "align-center"
+	text 10,275 to 130, 290, "filenametext", "Filename:", "MainWindow" 
+	text set "filenametext", "align-left"
+	text 10,295 to 130, 315, "pathnametext", "Path:", "MainWindow" 
+	text set "pathnametext", "align-left"
+	//Trackerbutton comes here
+	text 10,320 to 130, 340, "changedtext", "Changed:", "MainWindow" 
+	text set "changedtext", "align-left"
+	text 10,385 to 130, 405, "wordstext", "Words:", "MainWindow" 
+	text set "wordstext", "align-left"
+	text 10,410 to 130, 430, "bytestext", "Bytes:", "MainWindow" 
+	text set "bytestext", "align-left"
+	text 10,435 to 130, 455, "linestext", "Lines/paragraphs:", "MainWindow" 
+	text set "linestext", "align-left"
+	text 10,460 to 130, 480, "longesttext", "Longest line/para:", "MainWindow" 
+	text set "longesttext", "align-left"
+end sub
+
