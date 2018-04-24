@@ -1,5 +1,6 @@
-TEXT FILE LAB
+# TEXT FILE LAB
 by Michel Clasquin-Johnson
+
 =================
 
 Public Domain software for Haiku, written in yab using the Yabadabbadoo IDE
@@ -62,3 +63,6 @@ ElvenEdit_jaJP_Ctt.htm - change the input encoding to MS-KANJI
 Note how the document is translated. If you can read Russian or Japanese, you should be able to tell if this is the correct encoding. If not, feed the resulting UTF-8 text into Google Translate and see what it spits out. Accuracy may be improved as we get new versions of iconv.
  
 However, these are HTML documents. To export them to UTF-8 see them in a browser, you will have to edit them a little further in a text editor like StyledEdit or PE. Remove the META tags at the top of the document and try the result in WebPositive.
+
+Get it here: https://github.com/clasqm/TextLab
+
