@@ -7,6 +7,8 @@ Public Domain software for Haiku, written in yab using the Yabadabbadoo IDE
  
 This program allows you to convert between various encodings of text files (and that includes HTML). It is essentially a GUI front-end to iconv.
  
+![Text File Lab](textlab.png)
+
 TFL will never allow you to save your changes back to your original file. This is a safety measure. In fact, it does not even work on your file but on a copy in the TEMP directory. You can save your new, converted file with another name and once you are satisfied, you can use Tracker to delete the original and rename your new file to the old name.
  
 TFL deals with one file at a time. There is no batch mode and I have no plans to introdue one. If you need that, you will have to use iconv in Terminal.
